@@ -1,0 +1,558 @@
+{% extends 'dashboard/base.html' %}
+
+
+{% block content%}
+<div>
+  <div class="form-group">
+    <div class="custom-control custom-switch custom-switch-on-success">
+      <input type="checkbox" class="custom-control-input" id="liveupdate" checked>
+      <label class="custom-control-label" for="liveupdate" >Aggiornamento in tempo reale</label>
+    </div>
+  </div>
+</div>
+<div id="machine_status" class="row">
+
+    
+    <!-- Generali -->
+    <div class="col-lg-6 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Dati Generali</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">            
+            <ul>
+              <li id="reg-4555">
+                <span class="label">Stato : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4513">
+                <span class="label">Numero Programma : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4612000">
+                <span class="label">Conta Ore Totale: </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4517">
+                <span class="label">Velocità Avanzamento Impostata [m/min/10] : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4501">
+                <span class="label">Abilitazione Avanzamento : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4500001">
+                <span class="label">Presenza Allarmi : </span>
+                <span class="value "></span>
+              </li>
+              <li id="reg-4500005">
+                <span class="label">Selettore Locale Linea Remoto : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4500004">
+                <span class="label">Avanzamento in Marcia : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-20100005">
+                <span class="label">Pulsante di start lavorazione : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-20100002">
+                <span class="label">Pulsante di stop lavorazione : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-20100003">
+                <span class="label">Lavorazione in corso: </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-20110000">
+                <span class="label">Codice lavorazione: </span>
+                <span class="value"></span>
+                <button type="button" class="btn btn-outline-primary btn-xs"  data-toggle="modal" data-target="#modal-20110000">Modifica</button>
+              </li>
+              <li id="reg-8034000">
+                <span class="label">Tempo Lavorazione: </span>
+                <span class="value"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>      
+    </div>
+    <!-- /.card -->
+
+    <!-- Macchina -->
+    <div class="col-lg-6 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Macchina</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">            
+            <ul>
+              <li id="reg-4308">
+                <span class="label">Presenza Pezzo : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4360">
+                <span class="label">Sollevamento Spessore Attuale [mm/100]: </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4364">
+                <span class="label">Sollevamento Spessore Impostato [mm/100] : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4300005">
+                <span class="label">Abilitazione Depressore : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-4362">
+                <span class="label">Velocita Avanzamento Attuale [m/min/10] : </span>
+                <span class="value"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+
+
+    <!-- Gruppo 1 -->
+    <div class="col-lg-4 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Gruppo 1</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">            
+            <ul>
+              <li id="reg-2500000">
+                <span class="label">Abilitazione Gruppo : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2500004">
+                <span class="label">Abilitazione StandBy : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2502">
+                <span class="label">Grana del nastro abrasivo / altezza spazzola selezionata : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2529">
+                <span class="label">Grit-Set (posizione del gruppo di lavoro) Attuale : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2510">
+                <span class="label">Grit-Set (posizione del gruppo di lavoro) Impostato : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2527">
+                <span class="label">Stato Gruppo 0=Rosso 1=Verde 2=Verde Soffiatori 4=Giallo : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2528">
+                <span class="label">Velocità attulale del gruppo (calcolata) : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2505">
+                <span class="label">Velocità impostata del gruppo : </span>
+                <span class="value"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+
+    
+    <!-- Gruppo 2 -->    
+    <div class="col-lg-4 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Gruppo 2</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">            
+            <ul>
+              <li id="reg-2600000">
+                <span class="label">Abilitazione Gruppo : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2600004">
+                <span class="label">Abilitazione StandBy : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2602">
+                <span class="label">Grana del nastro abrasivo / altezza spazzola selezionata : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2629">
+                <span class="label">Grit-Set (posizione del gruppo di lavoro) Attuale : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2610">
+                <span class="label">Grit-Set (posizione del gruppo di lavoro) Impostato : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2627">
+                <span class="label">Stato Gruppo 0=Rosso 1=Verde 2=Verde Soffiatori 4=Giallo : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2628">
+                <span class="label">>Velocità attulale del gruppo (calcolata) : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2605">
+                <span class="label">Velocità impostata del gruppo : </span>
+                <span class="value"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+
+    <!-- Gruppo 3 -->    
+    <div class="col-lg-4 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Gruppo 3</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">            
+            <ul>
+              <li id="reg-2700000">
+                <span class="label">Abilitazione Gruppo : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2700004">
+                <span class="label">Abilitazione StandBy : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2702">
+                <span class="label">Grana del nastro abrasivo / altezza spazzola selezionata : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2729">
+                <span class="label">Grit-Set (posizione del gruppo di lavoro) Attuale : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2710">
+                <span class="label">Grit-Set (posizione del gruppo di lavoro) Impostato : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2727">
+                <span class="label">Stato Gruppo 0=Rosso 1=Verde 2=Verde Soffiatori 4=Giallo : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2728">
+                <span class="label">Velocità attulale del gruppo (calcolata) : </span>
+                <span class="value"></span>
+              </li>
+              <li id="reg-2705">
+                <span class="label">Velocità impostata del gruppo : </span>
+                <span class="value"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+
+
+    <!-- Allarmi -->  
+    <div class="col-lg-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Allarmi</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">            
+            <ul>
+
+              {% for key in alarmsDescriptions %}
+                <li id="reg-{{key}}">
+                  <span class="label">{{alarmsDescriptions[key]['testo']}} : </span>   
+                  <span class="text-info" data-toggle="modal" data-target="#modal-{{key}}">
+                    <i class="fas fa-question-circle"></i> 
+                  </span>             
+                  <span class="value"></span>
+                </li>
+              {% endfor %}
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+
+</div>
+<!-- /.row -->
+
+
+{% for key in alarmsDescriptions %}
+<!-- Modal {{key}}-->
+<div class="modal fade" id="modal-{{key}}" tabindex="-1" role="dialog" aria-labelledby="modal-{{key}}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{alarmsDescriptions[key]['testo']}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{alarmsDescriptions[key]['descrizione']}}
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Modal barcode -->
+<div class="modal fade" id="modal-20110000" tabindex="-1" role="dialog" aria-labelledby="modal-4352000" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modifica Codice Lavorazione</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form id="setBarcode">
+          <div class="form-group row">
+            <label for="barcode" class="col-sm-4 col-form-label">Codice</label>
+            <div class="col-sm-8">
+              <input class="form-control" name="barcode"  id="barcode" placeholder="1234" value="">
+            </div>
+          </div>
+        </form>
+        <button class="btn btn-info  float-right" id="btnSendBarcode">Invia</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% endblock %}
+
+{% block pagescript%}
+
+<script>
+
+liveupdate = true;
+
+function displayMachineStatus(status){
+  console.log("updating values");
+  for (const [key, value] of Object.entries(status)) {
+    var elementRoot = document.getElementById("reg-"+key);
+    if(typeof(elementRoot) != 'undefined' && elementRoot != null){
+
+
+      // elements with id exist
+      var elementValue = elementRoot.getElementsByClassName("value");
+      if (elementValue.length > 0) {
+
+        var valuetodisplay =value;
+        //custom value
+        switch (parseInt(key)) {
+            //toggle gray-green
+            
+            case 1:
+            {% for key in blueprints.keys() %}              
+              {% if blueprints[key]['valueDisplay']== "toggle_gray_green"  %}
+                  case {{key}}:
+              {% endif %}
+            {% endfor %}
+              switch (parseInt(valuetodisplay)) {
+                case 0: valuetodisplay = '<i class="fas fa-solid fa-circle text-muted"></i>'; break;
+                case 1: valuetodisplay = '<i class="fas fa-solid fa-circle text-success"></i>'; break;
+              }
+            break;
+            //toggle gray-red
+            case 2:
+            {% for key in blueprints.keys() %}              
+              {% if blueprints[key]['valueDisplay']== "toggle_gray_red"  %}
+                  case {{key}}:
+              {% endif %}
+            {% endfor %}
+              switch (parseInt(valuetodisplay)) {
+                case 0: valuetodisplay = '<i class="fas fa-solid fa-circle text-muted"></i>'; break;
+                case 1: valuetodisplay = '<i class="fas fa-solid fa-circle text-danger"></i>'; break;
+              }
+            break;
+            //stato
+            case 4555:
+              switch (parseInt(valuetodisplay)) {
+                case 0: valuetodisplay = 'Emergenza <i class="fas fa-solid fa-circle text-danger"></i>'; break;
+                case 1: valuetodisplay = 'Stop <i class="fas fa-solid fa-circle"></i>'; break;
+                case 2: valuetodisplay = 'Start <i class="fas fa-solid fa-circle text-success"></i>'; break;
+                case 3: valuetodisplay = 'Cons. Linea Off <i class="fas fa-solid fa-circle text-warning"></i>'; break;
+                case 7: valuetodisplay = 'Energy save Time 1 e 2 (velocità minima e arresto motori) attivi <i class="fas fa-solid fa-circle text-info"></i>'; break;
+              }
+            break;
+            //stato
+            case 4308:
+              switch (parseInt(valuetodisplay)) {
+                case 0: valuetodisplay = 'Nessuna Funzione <i class="fas fa-solid fa-circle text-muted"></i>'; break;
+                case 1: valuetodisplay = 'Presenza Pezzo <i class="fas fa-solid fa-circle text-success"></i>'; break;
+                case 2: valuetodisplay = 'Eccesso Spessore <i class="fas fa-solid fa-circle text-danger"></i>'; break;
+              }
+            break;
+
+              
+        }
+
+
+
+        // elements with class "value" exist
+        elementValue[0].innerHTML = valuetodisplay;
+      }
+
+    }else{
+      //console.log("Elemento non trovato reg-"+key)
+    }
+  }
+}
+
+function retriveData(){
+  
+
+  if (liveupdate == true){
+    var request = new XMLHttpRequest();
+    request.open('GET', '/machine/get-status', true);
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        // Success!
+        //console.log("new status recived");
+        var data = JSON.parse(request.responseText);
+        displayMachineStatus(data);
+
+      } else {
+        // We reached our target server, but it returned an error
+
+      }
+    };
+
+    request.onerror = function() {
+      // There was a connection error of some sort
+    };
+
+    request.send();
+  }
+
+  if (document.getElementById('liveupdate').checked) {
+    liveupdate = true;
+  } else {
+    liveupdate = false;
+  }
+}
+
+setInterval(retriveData, 1000);
+
+
+
+
+document.getElementById("btnSendBarcode").onclick = function() {sendBarcode()};
+function sendBarcode(){
+
+  barcode = document.getElementById("barcode").value;
+
+  //check address 
+  if (barcode.length >20 ){
+    //generate error
+    $(document).Toasts('create', {
+      class: 'bg-danger',
+      title: 'Valore erratto',
+      subtitle: 'Error',
+      body: 'Sono ammessi massimo 20 caratteri',
+      autohide: true,
+      delay: 3000
+    });
+
+  }else{
+    
+    var form_data = {};
+    form_data['barcode'] = barcode;
+
+    // Set-up ajax call
+    var request = {
+      url:  '/machine/barcode/put',
+      type: 'POST',
+      contentType: "application/json",
+      accepts: "application/json",
+      cache: false,
+      dataType: "json",
+      data: JSON.stringify(form_data)
+    };
+
+    $.ajax(request).done(function(data) { 
+      if (data==true){
+        $(document).Toasts('create', {
+          class: 'bg-success',
+          title: 'Invio completato',
+          body: 'Commando aggiunto alla lista',
+          autohide: true,
+          delay: 3000
+        });
+        $('#modal-20110000').modal('hide');
+      }else{
+
+        $(document).Toasts('create', {
+          class: 'bg-danger',
+          title: 'Errore',
+          subtitle: 'Error',
+          body: 'Errore invio',
+          autohide: true,
+          delay: 3000
+        });
+      }
+    }).fail(function(jqXHR, textStatus, errorThrown) { // Handle failure
+        $(document).Toasts('create', {
+          class: 'bg-danger',
+          title: 'Errore',
+          subtitle: 'Error',
+          body: 'Errore invio',
+          autohide: true,
+          delay: 3000
+        });
+      }
+    );
+
+  }
+
+}
+
+</script>
+
+{% endblock %}

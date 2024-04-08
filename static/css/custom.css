@@ -1,0 +1,19 @@
+
+#machine_status ul{
+    list-style: none;
+    padding-left: 0px;
+}
+#machine_status li{
+    border-bottom: 1px dotted rgb(94, 94, 94);
+    margin-bottom: 4px;
+}
+
+#machine_status span.label{
+    display: inline-block;
+    max-width: 90%;
+}
+#machine_status span.value{
+    display: inline-block;
+    float: right;
+    font-weight: 800;
+}

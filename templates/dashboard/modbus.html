@@ -1,0 +1,419 @@
+{% extends 'dashboard/base.html' %}
+
+
+{% block content%}
+<div>
+  <div class="form-group">
+    <div class="custom-control custom-switch custom-switch-on-success">
+      <input type="checkbox" class="custom-control-input" id="liveupdate" checked>
+      <label class="custom-control-label" for="liveupdate" >Aggiornamento in tempo reale</label>
+    </div>
+  </div>
+</div>
+<div id="modbus" class="row">
+
+    
+    <!-- Nuovo Comando -->
+    <div class="col-lg-4 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Invia Comando</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">   
+            <form id="newCommand">
+              <div class="form-group">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="commandType" id="ict40" value="40" checked="" >
+                  <label class="form-check-label">Leggi Registro</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="commandType" id="ict49" value="49">
+                  <label class="form-check-label">Scrivi Registro</label>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="address" class="col-sm-4 col-form-label">Registro</label>
+                <div class="col-sm-8">
+                  <input class="form-control" name="address"  id="inputAddress" placeholder="40000" value="4000">
+                </div>
+              </div>
+              
+              <div class="form-group row">
+                <label for="value" class="col-sm-4 col-form-label">Valore</label>
+                <div class="col-sm-8">
+                  <input class="form-control" name="value"  id="inputValue" placeholder="0" value="0" disabled>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button type="submit" class="btn btn-default" id="btnReset">Reset</button>
+          <button type="submit" class="btn btn-info  float-right"  id="btnSend">Invia</button>
+        </div>
+      </div>      
+    </div>
+    <!-- /.card -->
+
+    <!-- Elenco comandi -->
+    <div class="col-lg-8 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Risultati</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">    
+
+
+            <table class="table table-striped">
+
+              <thead>
+                <tr>
+                  <th style="width: 100px">Timestamp</th>
+                  <th style="width: 10px">Command</th>
+                  <th style="width: 10px">Address</th>
+                  <th style="width: 10px">Value</th>
+                  <th style="width: 40px">Result</th>
+                  <th style="width: 100px">Bits</th>
+                </tr>
+              </thead>
+              <tbody id="bodyGrid">
+              </tbody>
+
+            </table>
+
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+
+    <!-- Registri comandi -->
+    <div class="col-lg-12 col-md-12">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h5 class="card-title m-0">Elenco Registri</h5>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">    
+
+
+            <table class="table table-striped">
+
+              <thead>
+                <tr>
+                  <th style="width: 100px">#</th>
+                  <th style="width: 10px">Gruppo</th>
+                  <th style="width: 10px">Indirizzo Plc</th>
+                  <th style="width: 10px">TAG</th>
+                  <th style="width: 40px">Descrizione</th>
+                  <th style="width: 100px">Log</th>
+                </tr>
+              </thead>
+              <tbody id="bodyGrid_regs">
+              </tbody>
+
+            </table>
+
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+
+</div>
+<!-- /.row -->
+
+
+{% endblock %}
+
+{% block pagescript%}
+
+<script>
+
+liveupdate = true;
+
+function displayCommandsResult(data){
+  var grid = document.getElementById('bodyGrid');
+  
+  text = "";
+  for (let i = data.length-1; i >= 0; i--) {
+    commandResult = data[i];
+    value = commandResult['value'];
+    switch(commandResult['commandType']) {
+      case 40:
+        commandType = "lettura";
+        value = "";
+        bits = ( parseInt(commandResult['result'])  >>> 0).toString(2).padStart(16,"0");
+        break;
+      case 49:
+        commandType = "scrittura";
+        bits = ( value  >>> 0).toString(2).padStart(16,"0");
+        break;
+      default:
+        commandType = commandResult['commandType'];
+    }
+    text += "<tr>";
+    text += "<td>" + commandResult['timestamp'] + "</td>";
+    text += "<td>" + commandType + "</td>";
+    text += "<td>" + commandResult['address'] + "</td>";
+    text += "<td>" + value + "</td>";
+    text += "<td>" + commandResult['result'] + "</td>";
+    text += "<td>" + bits + "</td>";
+    text += "</tr>";
+  }
+  grid.innerHTML = text;
+}
+
+function retriveData(){
+  
+
+  if (liveupdate == true){
+    var request = new XMLHttpRequest();
+    request.open('GET', '/machine/commands/result/get', true);
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        // Success!
+        //console.log("new status recived");
+        var data = JSON.parse(request.responseText);
+        displayCommandsResult(data);
+
+      } else {
+        // We reached our target server, but it returned an error
+
+      }
+    };
+
+    request.onerror = function() {
+      // There was a connection error of some sort
+    };
+
+    request.send();
+  }
+
+  if (document.getElementById('liveupdate').checked) {
+    liveupdate = true;
+  } else {
+    liveupdate = false;
+  }
+}
+
+setInterval(retriveData, 3000);
+
+function resetCommandForm(){
+  document.getElementById("ict40").checked = true;
+  document.getElementById("ict49").checked = false;
+  document.getElementById("inputAddress").value="4000";
+  document.getElementById("inputValue").value="0";
+}
+
+
+function sendCommand(){
+  commandType = 0;
+  var radios = document.getElementsByName('commandType');
+  for (var i = 0, length = radios.length; i < length; i++) {
+    if (radios[i].checked) {
+      // do whatever you want with the checked radio
+      commandType = radios[i].value
+      break;
+    }
+  }
+  address = document.getElementById("inputAddress").value;
+  value = document.getElementById("inputValue").value;
+  
+  commandType =  parseInt(commandType);
+  address =  parseInt(address);
+
+  //check address 
+  if ((address < 0 ) || (address>65535)){
+    //generate error
+    $(document).Toasts('create', {
+      class: 'bg-danger',
+      title: 'Dati Errati',
+      subtitle: 'Error',
+      body: 'Indirizzo Registro non valido',
+      autohide: true,
+      delay: 3000
+    });
+
+  }else{
+    
+    var form_data = {};
+    form_data['commandType'] = commandType;
+    form_data['address'] = address;
+    form_data['value'] = value;
+
+    // Set-up ajax call
+    var request = {
+      url:  '/machine/commands/todo/put',
+      type: 'POST',
+      contentType: "application/json",
+      accepts: "application/json",
+      cache: false,
+      dataType: "json",
+      data: JSON.stringify(form_data)
+    };
+
+    $.ajax(request).done(function(data) { 
+      if (data==true){
+        $(document).Toasts('create', {
+          class: 'bg-success',
+          title: 'Invio completato',
+          body: 'Commando aggiunto alla lista',
+          autohide: true,
+          delay: 3000
+        });
+        resetCommandForm();
+      }else{
+
+        $(document).Toasts('create', {
+          class: 'bg-danger',
+          title: 'Errore',
+          subtitle: 'Error',
+          body: 'Errore invio',
+          autohide: true,
+          delay: 3000
+        });
+      }
+    }).fail(function(jqXHR, textStatus, errorThrown) { // Handle failure
+        $(document).Toasts('create', {
+          class: 'bg-danger',
+          title: 'Errore',
+          subtitle: 'Error',
+          body: 'Errore invio',
+          autohide: true,
+          delay: 3000
+        });
+      }
+    );
+
+  }
+
+}
+
+document.getElementById("btnReset").onclick = function() {resetCommandForm()};
+document.getElementById("btnSend").onclick = function() {sendCommand()};
+
+var rad = document.getElementsByName('commandType');
+//var prev = null;
+for (var i = 0; i < rad.length; i++) {
+    rad[i].addEventListener('change', function() {
+        //(prev) ? console.log(prev.value): null;
+        if (this.value == 40) {
+          document.getElementById("inputValue").disabled = true;
+        }else{
+          
+          document.getElementById("inputValue").disabled = false;
+        }
+        console.log(this.value)
+    });
+}
+
+
+
+
+/* list command */
+
+
+function displayBlueprints(data){
+  var grid = document.getElementById('bodyGrid_regs');
+  
+  text = "";
+  /*for (let i = data.length-1; i >= 0; i--) {*/
+  for (const [reg, blueprint] of Object.entries(data)) {
+    if(reg<65535)  {
+
+      /* search for sub reg */
+      subregs = {};
+      for (const [reg_sub, blueprint_sub] of Object.entries(data)) {
+        if(reg_sub>65535)  {
+          if(  blueprint_sub['regs_main']==reg ){
+            subregs[reg_sub] = blueprint_sub;
+          }
+        }
+      }
+
+
+
+
+      text += "<tr>";
+      text += "  <td><b>" + reg + "</b></td>";
+      text += "  <td>" + blueprint['group'] + "</td>";
+      text += "  <td>" + blueprint['plcaddr'] + "</td>";
+      text += "  <td>" + blueprint['tag'] + "</td>";
+      text += "  <td>" + blueprint['descrizione'] + "</td>";
+      text += "  <td>" + blueprint['log'] + "</td>";
+      text += "</tr>";
+
+      
+      for (const [reg_sub, blueprint_sub] of Object.entries(subregs)) {
+        
+        text += "<tr>";
+        text += "  <td> -- " + reg_sub + "</td>";
+        text += "  <td>" + blueprint_sub['group'] + "</td>";
+        text += "  <td>" + blueprint_sub['plcaddr'] + "</td>";
+        text += "  <td>" + blueprint_sub['tag'] + "</td>";
+        text += "  <td>" + blueprint_sub['descrizione'] + "</td>";
+        text += "  <td>" + blueprint_sub['log'] + "</td>";
+        text += "</tr>";
+      }
+
+    }
+  }
+  grid.innerHTML = text;
+}
+
+function retriveBlueprints(){
+  
+
+  if (liveupdate == true){
+    var request = new XMLHttpRequest();
+    request.open('GET', '/machine/blueprints/get', true);
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        // Success!
+        //console.log("new status recived");
+        var data = JSON.parse(request.responseText);
+        displayBlueprints(data);
+
+      } else {
+        // We reached our target server, but it returned an error
+
+      }
+    };
+
+    request.onerror = function() {
+      // There was a connection error of some sort
+    };
+
+    request.send();
+  }
+
+  if (document.getElementById('liveupdate').checked) {
+    liveupdate = true;
+  } else {
+    liveupdate = false;
+  }
+}
+retriveBlueprints();
+
+</script>
+
+{% endblock %}

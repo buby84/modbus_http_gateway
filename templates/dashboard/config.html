@@ -1,0 +1,89 @@
+{% extends 'dashboard/base.html' %}
+
+
+
+{% block pageimport%}
+
+
+{% endblock %}
+
+
+{% block content%}
+<!-- Main content -->
+<div id="modbus" class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="card-title m-0">Modifica </h5>
+            </div>
+            <form action="config/save" method="POST">
+                <div class="card-body">
+                    <div class="card-text">   
+                            
+                        <h4>App</h4>
+                        <div class="form-group row">
+                            
+                            <label for="address" class="col-sm-4 col-form-label">Richiedi Login</label>
+                            <div class="col-sm-8">
+                                <input type="checkbox" name="login" data-bootstrap-switch data-off-color="danger" data-on-color="success" {{'checked="checked"' if config_ini['APP']['login']=="1" else "no"}}>
+                            </div>                            
+                        </div>                        
+                        <h4>Logs</h4>
+                        <div class="form-group row">
+                            <label for="address" class="col-sm-4 col-form-label">Giorni ritenzione Log</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" name="day_retention_logs" placeholder="1" value="{{ config_ini['LOGS']['day_retention_logs'] }}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="value" class="col-sm-4 col-form-label">Giorni ritenzione Lavori</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" name="day_retention_logsjob"  placeholder="-1" value="{{ config_ini['LOGS']['day_retention_logsjob'] }}">
+                            </div>
+                        </div>
+
+                        
+                        <h4>Modbus</h4>
+                        <div class="form-group row">
+                            <label for="host" class="col-sm-4 col-form-label">Host IP</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" name="modbus_host" placeholder="127.0.0.1" value="{{ config_ini['MODBUS']['host'] }}">
+                            </div>
+                        </div>                        
+                        <div class="form-group row">
+                            <label for="value" class="col-sm-4 col-form-label">Porta</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" name="modbus_port"  placeholder="502" value="{{ config_ini['MODBUS']['port'] }}">
+                            </div>
+                        </div>                        
+                        <div class="form-group row">
+                            <label for="value" class="col-sm-4 col-form-label">Tempo Pooling</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" name="modbus_pooling_time"  placeholder="1" value="{{ config_ini['MODBUS']['pooling_time'] }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info  float-right"  id="btnSend">Invia</button>
+                </div>
+            </form>     
+        </div> 
+    </div>
+        <!-- /.card -->
+</div>
+<!-- /.card -->
+{% endblock %}
+
+{% block pagescript%}
+
+<!-- Bootstrap Switch -->
+<script src="static/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+
+<script>
+    $("input[data-bootstrap-switch]").each(function(){
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+    });
+</script>
+{% endblock %}

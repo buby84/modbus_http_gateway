@@ -1,0 +1,113 @@
+{% extends 'dashboard/base.html' %}
+
+
+
+{% block pageimport%}
+<!-- jsGrid -->
+<link rel="stylesheet" href="static/plugins/jsgrid/jsgrid.min.css">
+<link rel="stylesheet" href="static/plugins/jsgrid/jsgrid-theme.min.css">
+{% endblock %}
+
+
+{% block content%}
+<!-- Main content -->
+<div class="card">
+
+    <div class="card-body">
+        <div id="jsGrid1"></div>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+{% endblock %}
+
+{% block pagescript%}
+<!-- jsGrid -->
+<script src="static/plugins/jsgrid/demos/db.js"></script>
+<script src="static/plugins/jsgrid/jsgrid.min.js"></script>
+
+<script>
+
+    function displayLogs(logs){
+        
+        $("#jsGrid1").jsGrid({
+            height: "100%",
+            width: "100%",
+
+            sorting: true,
+            paging: true,
+            filtering: true, 
+
+            data: logs,
+
+            fields: [
+                {   title:'#',
+                    name: "id", 
+                    type: "number", 
+                    width: 30
+                },
+                {   title:'Data',
+                    name: "timestamp", 
+                    type: "string", 
+                    width: 50
+                },
+                {   title:'Codice',
+                    name: "code", 
+                    type: "number", 
+                    width: 50
+                },
+                {   title:'Indirizzo Plc',
+                    name: "plcaddr", 
+                    type: "string", 
+                    width: 50
+                },
+                {   title:'Descrizione',
+                    name: "descrizione", 
+                    type: "string", 
+                    width: 100
+                },
+                {   title:'Valore',
+                    name: "value", 
+                    type: "number", 
+                    width: 50
+                },
+                {   title:'Valore Raw',
+                    name: "value_raw", 
+                    type: "number", 
+                    width: 50
+                }
+            ]
+        });
+    }
+
+    function retriveData(){
+        var request = new XMLHttpRequest();
+        request.open('GET', '/machine/get-logs', true);
+
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+            // Success!
+            //console.log("new status recived");
+            var data = JSON.parse(request.responseText);
+            displayLogs(data);
+
+            } else {
+            // We reached our target server, but it returned an error
+
+            }
+        };
+
+        request.onerror = function() {
+            // There was a connection error of some sort
+        };
+
+        request.send();       
+
+    }
+
+
+    retriveData();
+
+</script>
+
+{% endblock %}

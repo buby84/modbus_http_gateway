@@ -1,0 +1,5 @@
+[program:costalevigatrici]                                                                  
+command = flask run --host=0.0.0.0                                   
+directory = /home/pi/costalevigatrici2                      
+autostart = true                                                                
+autorestart = true
